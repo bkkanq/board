@@ -1,0 +1,27 @@
+
+
+# docker run --name demo-mysql -e MYSQL_ROOT_PASSWORD=demo-pw -d mysql:8.0.23
+# https://velog.io/@marintelli/DB-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-MYSQL-DOCKER
+# create database db1
+
+
+# docker run -d --name demo-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=db1 -e MYSQL_USER=dbuser -e MYSQL_PASSWORD=dbpassword -p 3306:3306 -d mysql:8.0.23
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQLDialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/db1
+    username: dbuser
+    password: dbpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    validation-query: select 1
+  flyway:
+    locations: classpath:db/migration
+#  spring.flyway.baselineOnMigrate=true
+#  spring.flyway.check-location=true
+#  spring.flyway.locations=classpath:db/migration
+#  spring.flyway.schemas=public
+#  spring.flyway.enabled=true

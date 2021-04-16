@@ -6,6 +6,5 @@ pluginManagement {
 	}
 }
 rootProject.name = 'board'
-include 'web-server'
 include 'api-server'
 
