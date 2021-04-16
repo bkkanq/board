@@ -1,15 +1,21 @@
 // 공통 설정
 // 최상위 build.gradle은 모든 프로젝트에서 사용할만한 공통 설정이나 Task 등이 들어가며, 각 프로젝트 내부의 build.gradle엔 각 프로젝트의 설정이 들어간다.
+
+
 subprojects {
     buildscript {
         repositories {
             mavenLocal()
         }
     }
-    
+
+    apply plugin: 'java'
+    def defaultEncoding = 'UTF-8'
+    compileJava.options.encoding = defaultEncoding
+
     project.group = 'com.example'
     project.version = '0.0.1-SNAPSHOT'
-
+    sourceCompatibility = 1.11
     repositories {
         //가장 기본 Maven 리포지토리
         mavenCentral()

@@ -18,7 +18,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     validation-query: select 1
   flyway:
-    locations: classpath:/db/migration
+    locations: classpath:db/migration
 #  spring.flyway.baselineOnMigrate=true
 #  spring.flyway.check-location=true
 #  spring.flyway.locations=classpath:db/migration
