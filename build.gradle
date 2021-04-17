@@ -1,6 +1,26 @@
 // 공통 설정
 // 최상위 build.gradle은 모든 프로젝트에서 사용할만한 공통 설정이나 Task 등이 들어가며, 각 프로젝트 내부의 build.gradle엔 각 프로젝트의 설정이 들어간다.
 
+plugins {
+    id 'java' //java plugin은 프로젝트에 테스트나 번들링, 컴파일 등의 기능을 프로젝트에 추가해준다.
+    // java 플러그인을 적용 -> 프로덕션 코드를 /src/main/java에 배치하는것)과 자바 프로젝트 빌드에 필요한 태스크가 추가됨
+    // 그레이들에서 자바 프로젝트롤 빌드할 때 반드시 필요한 Java 플러그인을 사용합니다
+    // 그레이들은확장 가능한 자동화툴.. 플러그인을 추가하여 사
+    id 'com.google.cloud.tools.jib' version '3.0.0'
+}
+
+
+//jib {
+//    from.image = 'adoptopenjdk/openjdk11:jre11u-ubuntu-nightly'
+//    to.image = 'bkkanq/board'
+//
+//    container {
+//        jvmFlags = ['-XX:+UseNUMA', '-XX:+UseG1GC', '-Djava.security.egd=file:/dev/./urandom', '-Dsun.net.inetaddr.ttl=0', '-Dsun.net.inetaddr.negative.ttl=0', '-Djava.net.preferIPv4Stack=true']
+//        ports = ['8080']
+//        format = 'OCI'
+//        creationTime = 'USE_CURRENT_TIMESTAMP'
+//    }
+//}
 
 subprojects {
     buildscript {
@@ -10,6 +30,8 @@ subprojects {
     }
 
     apply plugin: 'java'
+    apply plugin: 'com.google.cloud.tools.jib'
+
     def defaultEncoding = 'UTF-8'
     compileJava.options.encoding = defaultEncoding
 
@@ -24,5 +46,9 @@ subprojects {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+    }
+
+    dependencies {
+        compile 'com.google.guava:guava:23.6-jre'
     }
 }

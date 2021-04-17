@@ -8,6 +8,7 @@ buildscript {
         //  Spring Boot 사용 시 executable jar나 war 패키징, 앱 실행, spring-boot-dependencies의 dependency management 기능 등을 사용할 수 있게 하는 플러그인이다.
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("io.franzbecker:gradle-lombok:1.8")
+        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.0.0}"
     }
 }
 plugins {
@@ -17,6 +18,7 @@ plugins {
     // 그레이들은확장 가능한 자동화툴.. 플러그인을 추가하여 사
     id 'org.springframework.boot' version '2.5.0-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    //id 'com.google.cloud.tools.jib' version '3.0.0'
 }
 
 version '0.0.1-SNAPSHOT'
@@ -29,6 +31,21 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+
+// https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#authentication-methods
+// https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#skaffold-integration
+jib {
+    from.image = 'adoptopenjdk/openjdk11:jre11u-ubuntu-nightly'
+    to.image = 'bkkanq/board'
+
+    container {
+        jvmFlags = ['-XX:+UseNUMA', '-XX:+UseG1GC', '-Djava.security.egd=file:/dev/./urandom', '-Dsun.net.inetaddr.ttl=0', '-Dsun.net.inetaddr.negative.ttl=0', '-Djava.net.preferIPv4Stack=true']
+        ports = ['8080']
+        format = 'OCI'
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+}
+
 
 //이게 없으면... 안되네 왜냐면 spring은 여기에만..
 repositories {
