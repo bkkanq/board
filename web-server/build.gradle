@@ -1,0 +1,125 @@
+buildscript {
+    // buildscript는 Gradle 빌드 스크립트 자체를 위한 의존성이나 변수, Task, Plugin 등을 지정할 수 있다. 서드파티 플러그인이나 Task, Class 등을 빌드 스크립트 내에서 추가로 사용하려면 해당 의존성을 추가해줘야 한다. build.gradle 자체를 실행하기 위한 설정이라 보면 된다.
+    // 서드파티 플러그인이나 Task, Class 등을 빌드 스크립트 내에서 추가로 사용하려면 해당 의존성을 추가해줘야 한다. build.gradle 자체를 실행하기 위한 설정이라 보면 된다.
+    ext {
+        springBootVersion = '2.5.0-SNAPSHOT'
+    }
+    dependencies {
+        //  Spring Boot 사용 시 executable jar나 war 패키징, 앱 실행, spring-boot-dependencies의 dependency management 기능 등을 사용할 수 있게 하는 플러그인이다.
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.franzbecker:gradle-lombok:1.8")
+        //classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.0.0}"
+    }
+}
+plugins {
+//    id 'java' //java plugin은 프로젝트에 테스트나 번들링, 컴파일 등의 기능을 프로젝트에 추가해준다.
+    // java 플러그인을 적용 -> 프로덕션 코드를 /src/main/java에 배치하는것)과 자바 프로젝트 빌드에 필요한 태스크가 추가됨
+    // 그레이들에서 자바 프로젝트롤 빌드할 때 반드시 필요한 Java 플러그인을 사용합니다
+    // 그레이들은확장 가능한 자동화툴.. 플러그인을 추가하여 사
+    id 'org.springframework.boot' version '2.5.0-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+//    id 'com.google.cloud.tools.jib' version '3.0.0'
+}
+
+version '0.0.1-SNAPSHOT'
+
+// 자바 코드를 컴파일할때 사용하는 자바 버전
+//sourceCompatibility = 1.11
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+// https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#authentication-methods
+// https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#skaffold-integration
+//jib {
+//    from.image = 'adoptopenjdk/openjdk11:jre11u-ubuntu-nightly'
+//    to.image = 'bkkanq/board'
+//
+//    container {
+//        jvmFlags = ['-XX:+UseNUMA', '-XX:+UseG1GC', '-Djava.security.egd=file:/dev/./urandom', '-Dsun.net.inetaddr.ttl=0', '-Dsun.net.inetaddr.negative.ttl=0', '-Djava.net.preferIPv4Stack=true']
+//        ports = ['8080']
+//        format = 'OCI'
+//        creationTime = 'USE_CURRENT_TIMESTAMP'
+//    }
+//}
+
+
+//이게 없으면... 안되네 왜냐면 spring은 여기에만..
+repositories {
+    //의존관계를 해결하기위한 저장소로 메이븐 중앙 저장소를 지정한다
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
+ext {
+    set('springCloudVersion', "2020.0.3-SNAPSHOT")
+}
+
+dependencies {
+    // compile ~ implementation : 프로덕션코드를 컴파일하고 실행할때
+    // testcompile ~ testImplementation : 테스트코드를 컴파일하고 실행할때
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter'
+//    implementation 'org.flywaydb:flyway-core'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+//    implementation 'org.springframework.session:spring-session-core'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'mysql:mysql-connector-java'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo()
+}
+
+//gradlew hello
+task hello {
+    println 'Hello Gradle world!'
+    //103
+    println sourceSets.test.compileClasspath
+}
+
+bootRun {
+    //println "Classpath = ${sourceSets.main.compileClasspath.asPath}";
+    systemProperties = System.properties
+}
+
+// gradlew command : gradlew $cmd
+// hello
+// task
+// properties
+
+//gradlew -i(--info) $task
+//gradlew -d(--debug) $task
+//gradlew -s(--stacktrace) $task :: 문제발생지점이 사용자코드일때 사용
+//gradlew -b build-new.gradle :: build.gradle 말고 다른 gradle 파일 사용
+
+//gradlew compileJava : 프로덕션코드 컴파일
+//gradlew processResources : 프로덕션 코드의 리소스를 클래스패스에 복사
+// 복사대상은 소스세트의 main의 resources.srcDirs 속성에서 지정한 디렉터리에 있는 파일중 확장자가 .java가 인 것을 제외한 모든파일
+
+//소스세트 단위 속성
+// compileClassPath
+//gradlew classpath
