@@ -6,7 +6,12 @@
 
 
 # docker run -d --name demo-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=db1 -e MYSQL_USER=dbuser -e MYSQL_PASSWORD=dbpassword -p 3306:3306 -d mysql:8.0.23
+server:
+  port: 8020
 spring:
+  security:
+    basic:
+      enabled: false
   jpa:
     hibernate:
       ddl-auto: create

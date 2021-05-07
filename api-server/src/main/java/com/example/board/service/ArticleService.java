@@ -11,13 +11,26 @@ import org.springframework.stereotype.Service;
 import com.example.board.model.Article;
 
 @Service
-public class MainService {
+public class ArticleService {
     private final Clock clock = Clock.fixed(Instant.EPOCH, ZoneId.systemDefault());
-    public MainService(){}
+
+    public ArticleService(){}
 
     public List<Article> getArticles() {
         Date currentDate = Date.from(clock.instant());
         return List.of(new Article(1L, 1L, currentDate),
                        new Article(2L,1L, currentDate));
+    }
+
+    public Article getArticle(long id) {
+        Date currentDate = Date.from(clock.instant());
+        return new Article(1L, 1L, currentDate);
+    }
+
+    public void deleteArticle(long id) {}
+
+    public Article createArticle(Article article) {
+        return article;
+
     }
 }
