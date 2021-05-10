@@ -1,24 +1,19 @@
 package com.example.board.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.example.board.model.Article;
-import com.example.board.service.BoardService;
+import com.example.board.service.ArticleService;
 
 @Controller
 public class MainController {
 
-    private final BoardService boardService;
+    private final ArticleService articleService;
 
-    MainController(BoardService boardService) {
-        this.boardService = boardService;
+    MainController(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     @RequestMapping("/hello")
@@ -30,9 +25,9 @@ public class MainController {
     }
 
     @RequestMapping(value="/articles", method = RequestMethod.GET)
-    public Model getArticles(Model model) {
-        model.addAttribute("articles", boardService.getBoards());
-        return model;
+    public String getArticles(Model model) {
+        model.addAttribute("articles", articleService.getArticles());
+        return "main";
     }
 
 }
